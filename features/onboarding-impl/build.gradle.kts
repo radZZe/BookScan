@@ -51,6 +51,8 @@ dependencies {
     onboardingFeatureApi()
     //implementation(project(":data"))
 
+    splash()
+    pager()
     hilt()
     compose()
     navigation()
