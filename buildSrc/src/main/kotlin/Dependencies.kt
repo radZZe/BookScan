@@ -6,6 +6,8 @@ object Dependencies {
     const val hilt = "com.google.dagger:hilt-android:${Versions.hilt}"
     const val hiltAgp = "com.google.dagger.hilt.android"
     const val hilt_compiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
+    const val hilt_navigation = "androidx.hilt:hilt-navigation-compose:${Versions.hilt_navigation}"
+    const val hilt_navigation_compiler = "androidx.hilt:hilt-compiler:${Versions.hilt_navigation}"
     const val core_ktx = "androidx.core:core-ktx:${Versions.core_ktx}"
     const val lifecycle_runtime_ktx =  "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle_runtime_ktx}"
     const val activity_compose = "androidx.activity:activity-compose:${Versions.activity_compose}"
@@ -22,7 +24,12 @@ object Dependencies {
     const val compose_ui_test = "androidx.compose.ui:ui-test-manifest"
     const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
     const val android_material = "com.google.android.material:material:${Versions.material}"
+    const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist_version}"
+    const val pager_indicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist_version}"
+    const val splash_api = "androidx.core:core-splashscreen:${Versions.splash_api}"
+
 }
+
 
 fun DependencyHandler.compose() {
     implementation(Dependencies.activity_compose)
@@ -35,12 +42,20 @@ fun DependencyHandler.compose() {
     implementation(Dependencies.compose_ui_tooling_preview)
 }
 
-
+fun DependencyHandler.pager(){
+    implementation(Dependencies.pager)
+    implementation(Dependencies.pager_indicators)
+}
+fun DependencyHandler.splash(){
+    implementation(Dependencies.splash_api)
+}
 
 
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hilt)
     kapt(Dependencies.hilt_compiler)
+    kapt(Dependencies.hilt_navigation_compiler)
+    implementation(Dependencies.hilt_navigation)
 }
 //FEATURES ONBOARDING
 fun DependencyHandler.onboardingFeatureApi() {
