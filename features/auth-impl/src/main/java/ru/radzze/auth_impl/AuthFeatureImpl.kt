@@ -6,10 +6,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import ru.radzze.auth_api.AuthFeatureApi
 import ru.radzze.auth_impl.ui.AuthScreen
+import ru.radzze.scan_api.ScanFeatureApi
 import javax.inject.Inject
 
 
-class AuthFeatureImpl @Inject constructor():AuthFeatureApi {
+class AuthFeatureImpl @Inject constructor(
+    private val scanFeatureApi: ScanFeatureApi
+):AuthFeatureApi {
     override val authRoute: String
         get() = "auth"
 
@@ -19,7 +22,11 @@ class AuthFeatureImpl @Inject constructor():AuthFeatureApi {
         modifier: Modifier
     ) {
         navGraphBuilder.composable(authRoute) {
-            AuthScreen()
+            AuthScreen(navigateToMainGraph = {
+                navController.navigate(scanFeatureApi.scanRoute) {
+                    popUpTo(authRoute) { inclusive = true }
+                }
+            })
         }
     }
 }

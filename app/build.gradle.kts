@@ -61,17 +61,25 @@ dependencies {
     onboardingFeatureApi()
     onboardingFeatureImpl()
     core()
+    data()
     authFeatureImpl()
     authFeatureApi()
+    scanFeatureApi()
+    scanFeatureImpl()
+    libraryFeatureApi()
+    libraryFeatureImpl()
+    settingsFeatureApi()
+    settingsFeatureImpl()
     //implementation(project(":data"))
 
     hilt()
     compose()
     navigation()
 
+
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
-
+    implementation(Dependencies.datastore_preferences)
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.ext_junit)
     androidTestImplementation(Dependencies.espresso)

@@ -27,6 +27,7 @@ object Dependencies {
     const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist_version}"
     const val pager_indicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist_version}"
     const val splash_api = "androidx.core:core-splashscreen:${Versions.splash_api}"
+    const val datastore_preferences = "androidx.datastore:datastore-preferences:${Versions.datastore_preferences}"
 
 }
 
@@ -64,10 +65,36 @@ fun DependencyHandler.onboardingFeatureApi() {
 fun DependencyHandler.onboardingFeatureImpl() {
     implementation(project(":features:onboarding-impl"))
 }
+
 // FEATURES AUTH
 fun DependencyHandler.authFeatureApi() {
     implementation(project(":features:auth-api"))
 }
+
+//FEATURES SCAN
+fun DependencyHandler.scanFeatureApi() {
+    implementation(project(":features:scan-api"))
+}
+fun DependencyHandler.scanFeatureImpl() {
+    implementation(project(":features:scan-impl"))
+}
+
+//FEATURES LIBRARY
+fun DependencyHandler.libraryFeatureApi() {
+    implementation(project(":features:library-api"))
+}
+fun DependencyHandler.libraryFeatureImpl() {
+    implementation(project(":features:library-impl"))
+}
+
+//FEATURES SETTINGS
+fun DependencyHandler.settingsFeatureApi() {
+    implementation(project(":features:settings-api"))
+}
+fun DependencyHandler.settingsFeatureImpl() {
+    implementation(project(":features:settings-impl"))
+}
+
 fun DependencyHandler.authFeatureImpl() {
     implementation(project(":features:auth-impl"))
 }
@@ -76,4 +103,8 @@ fun DependencyHandler.core() {
 }
 fun DependencyHandler.navigation() {
     implementation(Dependencies.navigation)
+}
+
+fun DependencyHandler.data() {
+    implementation(project(":data"))
 }
