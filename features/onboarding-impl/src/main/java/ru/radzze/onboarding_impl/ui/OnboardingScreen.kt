@@ -74,6 +74,7 @@ fun OnboardingScreen(
             onClick = {
                 if (pagerState.currentPage == 4) {
                     onNavigateToLogin()
+                    viewModel.saveOnboardingState()
                 } else {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)

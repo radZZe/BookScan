@@ -14,11 +14,18 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/auth-api" />
             <option value="$PROJECT_DIR$/features/auth-impl" />
+            <option value="$PROJECT_DIR$/features/library-api" />
+            <option value="$PROJECT_DIR$/features/library-impl" />
             <option value="$PROJECT_DIR$/features/onboarding-api" />
             <option value="$PROJECT_DIR$/features/onboarding-impl" />
+            <option value="$PROJECT_DIR$/features/scan-api" />
+            <option value="$PROJECT_DIR$/features/scan-impl" />
+            <option value="$PROJECT_DIR$/features/settings-api" />
+            <option value="$PROJECT_DIR$/features/settings-impl" />
           </set>
         </option>
       </GradleProjectSettings>
