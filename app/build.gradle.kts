@@ -77,6 +77,7 @@ dependencies {
     navigation()
 
 
+    implementation ("com.etebarian:meow-bottom-navigation:1.2.0")
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
     implementation(Dependencies.datastore_preferences)
