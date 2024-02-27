@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.radzze.auth_api.AuthFeatureApi
 import ru.radzze.bookscan.navigation.AppNavGraph
-import ru.radzze.bookscan.navigation.BottomBar
 import ru.radzze.bookscan.navigation.BottomBarXml
 import ru.radzze.bookscan.navigation.BottomTabs
 import ru.radzze.bookscan.ui.theme.BookScanTheme
