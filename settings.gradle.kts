@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 }
 
@@ -27,3 +28,4 @@ include(":features:settings-impl")
 include(":features:library-api")
 include(":features:library-impl")
 include(":data")
+include(":curvedBottomNav")

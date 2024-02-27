@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import ru.radzze.auth_api.AuthFeatureApi
 import ru.radzze.bookscan.navigation.AppNavGraph
 import ru.radzze.bookscan.navigation.BottomBar
+import ru.radzze.bookscan.navigation.BottomBarXml
 import ru.radzze.bookscan.navigation.BottomTabs
 import ru.radzze.bookscan.ui.theme.BookScanTheme
 import ru.radzze.library_api.LibraryFeatureApi
@@ -75,7 +76,7 @@ class MainActivity : ComponentActivity() {
             )
         )
         var onboardingState = false
-        lifecycleScope.launch(Dispatchers.IO){
+        lifecycleScope.launch(Dispatchers.IO) {
             onboardingState = mViewModel.getOnboardingState()
         }
         setContent {
@@ -86,9 +87,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val bottomNavTabs = remember{tabs}
+                    val bottomNavTabs = remember { tabs }
                     Scaffold(
-                        bottomBar = { BottomBar(navController = navController, bottomNavTabs) }
+                        bottomBar = { BottomBarXml(navController = navController, bottomNavTabs) }
                     ) {
 
                         AppNavGraph(
