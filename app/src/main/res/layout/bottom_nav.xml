@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+    <ru.radzze.curvedbottomnav.MeowBottomNavigation
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,9 +14,10 @@
         app:mbn_countBackgroundColor="#ff6f00"
         app:mbn_countTextColor="#ffffff"
         app:mbn_defaultIconColor="#000000"
-        app:mbn_rippleColor="#2f424242"
+        app:mbn_rippleColor="#2FFFFFFF"
         app:mbn_selectedIconColor="#000000"
-        app:mbn_shadowColor="#1f212121"
+        app:mbn_shadowColor="#0000FF04"
+        app:mbn_titleTextColor ="#000000"
         />
 
 </RelativeLayout>
