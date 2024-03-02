@@ -75,8 +75,10 @@ class MainActivity : ComponentActivity() {
             )
         )
         var onboardingState = false
-        lifecycleScope.launch(Dispatchers.IO) {
+        var authState = false
+        lifecycleScope.launch(Dispatchers.IO){
             onboardingState = mViewModel.getOnboardingState()
+            authState = mViewModel.getAuthState()
         }
         setContent {
             BookScanTheme {
@@ -99,7 +101,8 @@ class MainActivity : ComponentActivity() {
                             settingsFeatureApi = settingsFeatureApi,
                             scanFeatureApi = scanFeatureApi,
                             libraryFeatureApi = libraryFeatureApi,
-                            onBoardingState = onboardingState
+                            onBoardingState = onboardingState,
+                            authState = authState
                         )
 
                     }

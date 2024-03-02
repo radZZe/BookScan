@@ -23,13 +23,17 @@ fun AppNavGraph(
     scanFeatureApi: ScanFeatureApi,
     settingsFeatureApi: SettingsFeatureApi,
     libraryFeatureApi: LibraryFeatureApi,
-    onBoardingState:Boolean
-
+    onBoardingState:Boolean,
+    authState: Boolean
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = if(onBoardingState) authFeatureApi.authRoute else onboardingFeatureApi.onboardingRoute
+        startDestination = if (onBoardingState) {
+            if (authState) {
+                scanFeatureApi.scanRoute
+            } else authFeatureApi.authRoute
+        } else onboardingFeatureApi.onboardingRoute
     ) {
         register(
             onboardingFeatureApi,
