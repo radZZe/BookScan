@@ -38,12 +38,21 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    dataBinding{
+        enable = true
+    }
     hilt {
         enableAggregatingTask = false
     }
 }
 
 dependencies {
+    // TODO REFACTOR DEPENDENCY MANAGEMENT
+    implementation ("androidx.camera:camera-core:1.2.2")
+    implementation ("androidx.camera:camera-camera2:1.2.2")
+    implementation ("androidx.camera:camera-lifecycle:1.2.2")
+    implementation ("androidx.camera:camera-view:1.2.2")
+    implementation ("androidx.camera:camera-extensions:1.2.2")
     core()
     scanFeatureApi()
     hilt()

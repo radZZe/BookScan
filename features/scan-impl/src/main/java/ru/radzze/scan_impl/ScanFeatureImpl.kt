@@ -1,5 +1,6 @@
 package ru.radzze.scan_impl
 
+import android.content.Context
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -8,7 +9,9 @@ import ru.radzze.scan_api.ScanFeatureApi
 import ru.radzze.scan_impl.ui.ScanScreen
 import javax.inject.Inject
 
-class ScanFeatureImpl @Inject constructor():ScanFeatureApi {
+class ScanFeatureImpl @Inject constructor(
+    private val applicationContext:Context
+):ScanFeatureApi {
     override val scanRoute: String
         get() = "scan"
 
@@ -18,7 +21,7 @@ class ScanFeatureImpl @Inject constructor():ScanFeatureApi {
         modifier: Modifier
     ) {
         navGraphBuilder.composable(scanRoute) {
-            ScanScreen()
+            ScanScreen(applicationContext)
         }
     }
 }

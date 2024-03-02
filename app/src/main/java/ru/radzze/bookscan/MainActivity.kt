@@ -36,6 +36,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    val jopa = this
     @Inject
     lateinit var authFeatureApi: AuthFeatureApi
 
