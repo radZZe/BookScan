@@ -58,10 +58,12 @@ import ru.radzze.auth_impl.R
 @Composable
 fun CodeVerificationScreen(
     email: String,
-    onNavigateToSignIn: () -> Unit,
+    onBackNavigate: () -> Unit,
     onNavigateToScanFeature: () -> Unit,
     viewModel: CodeVerificationViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) { viewModel.email.value = email }
+
     val timer by viewModel.timer.collectAsState()
     val isOver by viewModel.isOver.collectAsState()
     val isValid by viewModel.isValid.collectAsState()
@@ -94,7 +96,7 @@ fun CodeVerificationScreen(
                         .clickable(
                             interactionSource = MutableInteractionSource(),
                             indication = null
-                        ) { onNavigateToSignIn() }
+                        ) { onBackNavigate() }
                 )
                 Text(
                     text = "Код подтверждения",
@@ -160,7 +162,10 @@ fun CodeVerificationScreen(
                         modifier = Modifier.clickable(
                             interactionSource = MutableInteractionSource(),
                             indication = null
-                        ) { viewModel.resendCode() },
+                        ) {
+                            viewModel.resendCode()
+                            viewModel.connectInputtedCode()
+                          },
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal,
@@ -280,17 +285,18 @@ private fun VerificationCodeFields(
                     if (textList[i].text.isNotBlank()) {
                         if (newValue.text == "") {
                             viewModel.changeTextListItem(
-                                i,
+                                index = i,
                                 TextFieldValue(
                                     text = "",
                                     selection = TextRange(0)
                                 )
                             )
+                            viewModel.previousFocus()
                         }
                         return@InputField
                     }
                     viewModel.changeTextListItem(
-                        i,
+                        index = i,
                         TextFieldValue(
                             text = newValue.text,
                             selection = TextRange(newValue.text.length)
@@ -309,7 +315,7 @@ private fun VerificationCodeFields(
                             }
                         }
                     }
-                    viewModel.nextFocus()
+                    if (newValue.text != "") viewModel.nextFocus()
                 },
                 focusRequester = viewModel.requestList[i],
                 isUnblocked = isUnblocked

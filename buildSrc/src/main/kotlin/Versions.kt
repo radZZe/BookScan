@@ -15,5 +15,7 @@ object Versions {
     const val accompanist_version ="0.24.2-alpha"
     const val splash_api = "1.0.0-beta01"
     const val datastore_preferences = "1.0.0"
+    const val retrofit = "2.6.0"
+    const val gson = "2.5.0"
 
 }

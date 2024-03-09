@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,7 +74,7 @@ fun AuthScreen(
                 contentPadding = PaddingValues(vertical = 12.dp)
             ) {
                 Text(
-                    text = "Получить код",
+                    text = stringResource(R.string.get_code),
                     fontSize = 16.sp
                 )
             }
@@ -103,17 +104,18 @@ fun EmailField(
                 Text(
                     text = "",
                     fontSize = 16.sp,
-                    color = Color(134, 134, 134)
+                    color = Color.LightGray
                 )
             }
         },
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color(239, 235, 222),
-            unfocusedIndicatorColor = Color.Transparent,
+            containerColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.LightGray,
             focusedLabelColor = Color.Gray,
             unfocusedTrailingIconColor = Color.Transparent,
             focusedTrailingIconColor = Color.LightGray,
             focusedIndicatorColor = Color.LightGray,
+            unfocusedSupportingTextColor = Color.LightGray
         ),
         trailingIcon = {
             if (value.isNotBlank()) {
@@ -130,31 +132,7 @@ fun EmailField(
             .fillMaxWidth()
             .height(62.dp)
     )
-//    BasicTextField(
-//        value = value,
-//        onValueChange = onValueChange,
-//        singleLine = true,
-//        textStyle = TextStyle(
-//            fontSize = 16.sp,
-//            color = Color.Black
-//        )
-//    ) { innerTextField ->
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .clip(RoundedCornerShape(15.dp))
-//                .background(Color(239, 235, 222))
-//                .padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
-//            contentAlignment = Alignment.CenterStart,
-//        ) {
-//            if (value.isEmpty()) {
-//                Text(
-//                    text = placeholder,
-//                    fontSize = 16.sp,
-//                    color = Color(134, 134, 134)
-//                )
-//            }
-//            innerTextField()
-//        }
-//    }
 }
+
+
+

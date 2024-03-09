@@ -45,12 +45,10 @@ class AuthFeatureImpl @Inject constructor(
                 email = email,
                 onNavigateToScanFeature = {
                     navController.navigate(scanFeatureApi.scanRoute) {
-                        navController.navigate(scanFeatureApi.scanRoute) {
-                            popUpTo(authRoute) { inclusive = true }
-                        }
+                        popUpTo(authRoute) { inclusive = true }
                     }
                 },
-                onNavigateToSignIn = {
+                onBackNavigate = {
                     navController.popBackStack()
                 }
             )

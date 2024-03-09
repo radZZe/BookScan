@@ -1,6 +1,7 @@
 package ru.radzze.auth_impl.ui
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,12 +17,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.radzze.auth_impl.data.LoginRequest
 import ru.radzze.auth_impl.domain.AuthRepository
+import ru.radzze.auth_impl.domain.AuthService
 import javax.inject.Inject
 
 
 @HiltViewModel
 class CodeVerificationViewModel @Inject constructor(
+    private val service: AuthService,
     private val repository: AuthRepository
 ) : ViewModel() {
 
@@ -67,9 +71,9 @@ class CodeVerificationViewModel @Inject constructor(
     private val _isUnblocked: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isUnblocked = _isUnblocked.asStateFlow()
 
-    private var isCodeVerified by mutableStateOf(false)
+    private var failedAttempts by mutableIntStateOf(0)
 
-    private var failedAttempts by mutableStateOf(0)
+    val email = mutableStateOf("")
 
     init {
         viewModelScope.launch {
@@ -81,9 +85,7 @@ class CodeVerificationViewModel @Inject constructor(
         while (true) {
             delay(1000)
             _timer.value--
-            if (_timer.value == 0) {
-                _isOver.update { true }
-            }
+            if (_timer.value == 0) _isOver.update { true }
         }
     }
 
@@ -94,15 +96,25 @@ class CodeVerificationViewModel @Inject constructor(
     fun resendCode() {
         _timer.value = 59
         _isOver.update { false }
+        failedAttempts = 0
+        clearFields()
+    }
+
+    private fun clearFields() {
+        for (index in _textList.indices) {
+            _textList[index] = TextFieldValue(
+                text = "",
+                selection = TextRange(0)
+            )
+        }
+        _isValid.update { null }
     }
 
     private suspend fun unblockTimer() {
         while (true) {
             delay(1000)
             _blockTimer.value--
-            if (_blockTimer.value == 0) {
-                _isUnblocked.update { true }
-            }
+            if (_blockTimer.value == 0) _isUnblocked.update { true }
         }
     }
 
@@ -117,8 +129,20 @@ class CodeVerificationViewModel @Inject constructor(
         }
     }
 
+    fun previousFocus() {
+        for (i in textList.indices) {
+            if (textList[i].text == "") {
+                if (i < textList.size) {
+                    val index = if (i == 0) 0 else i - 1
+                    requestList[index].requestFocus()
+                    break
+                }
+            }
+        }
+    }
+
     fun connectInputtedCode(
-        onVerifyCode: ((Success: Boolean) -> Unit)? = null
+        onVerifyCode: ((success: Boolean) -> Unit)? = null
     ) {
         var code = ""
         for (text in _textList) {
@@ -140,6 +164,8 @@ class CodeVerificationViewModel @Inject constructor(
                     }
                 }
             )
+        } else {
+            _isValid.update { null }
         }
     }
 
@@ -148,15 +174,25 @@ class CodeVerificationViewModel @Inject constructor(
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        if (code == "1111") {
-            onSuccess()
-        } else {
-            failedAttempts++
-            if (failedAttempts == 3) {
-                _isUnblocked.update { false }
-                viewModelScope.launch { unblockTimer() }
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                val loginRequest = LoginRequest(email = email.value, code = code.toInt())
+
+                val result = service.verifyUser(loginRequest).isSuccessful
+                if (result) {
+                    onSuccess()
+                } else {
+                    failedAttempts++
+                    if (failedAttempts == 3) {
+                        _isUnblocked.update { false }
+                        viewModelScope.launch { unblockTimer() }
+                    }
+                    onError()
+                }
+
             }
-            onError()
+        } catch (_: Exception) {
+
         }
     }
 
