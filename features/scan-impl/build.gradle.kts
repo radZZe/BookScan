@@ -14,6 +14,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -41,18 +44,19 @@ android {
     dataBinding{
         enable = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
     hilt {
         enableAggregatingTask = false
     }
 }
 
 dependencies {
-    // TODO REFACTOR DEPENDENCY MANAGEMENT
-    implementation ("androidx.camera:camera-core:1.2.2")
-    implementation ("androidx.camera:camera-camera2:1.2.2")
-    implementation ("androidx.camera:camera-lifecycle:1.2.2")
-    implementation ("androidx.camera:camera-view:1.2.2")
-    implementation ("androidx.camera:camera-extensions:1.2.2")
+    retrofit()
+    camera()
     core()
     scanFeatureApi()
     hilt()

@@ -36,7 +36,6 @@ android {
 
 dependencies {
     hilt()
-
     implementation(Dependencies.datastore_preferences)
     implementation(Dependencies.core_ktx)
     testImplementation(Dependencies.junit)

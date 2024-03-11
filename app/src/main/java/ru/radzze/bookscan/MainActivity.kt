@@ -36,7 +36,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val jopa = this
     @Inject
     lateinit var authFeatureApi: AuthFeatureApi
 
@@ -51,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var libraryFeatureApi: LibraryFeatureApi
+
 
     private val mViewModel: MainActivityViewModel by viewModels()
 
