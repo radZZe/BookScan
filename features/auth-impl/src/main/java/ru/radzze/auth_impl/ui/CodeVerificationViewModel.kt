@@ -177,9 +177,8 @@ class CodeVerificationViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val loginRequest = LoginRequest(email = email.value, code = code.toInt())
-
-                val result = service.verifyUser(loginRequest).isSuccessful
-                if (result) {
+                val result = service.verifyUser(loginRequest)
+                if (result.isSuccessful) {
                     onSuccess()
                 } else {
                     failedAttempts++
