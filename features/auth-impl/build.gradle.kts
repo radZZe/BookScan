@@ -56,6 +56,8 @@ dependencies {
     navigation()
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
+    implementation(Dependencies.retrofit)
+    implementation(Dependencies.gson)
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.ext_junit)
     androidTestImplementation(Dependencies.espresso)

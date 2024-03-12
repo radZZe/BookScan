@@ -28,6 +28,8 @@ object Dependencies {
     const val pager_indicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist_version}"
     const val splash_api = "androidx.core:core-splashscreen:${Versions.splash_api}"
     const val datastore_preferences = "androidx.datastore:datastore-preferences:${Versions.datastore_preferences}"
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+    const val gson = "com.squareup.retrofit2:converter-gson:${Versions.gson}"
 
 }
 
@@ -107,4 +109,12 @@ fun DependencyHandler.navigation() {
 
 fun DependencyHandler.data() {
     implementation(project(":data"))
+}
+
+fun DependencyHandler.retrofit() {
+    implementation(Dependencies.retrofit)
+}
+
+fun DependencyHandler.gson() {
+    implementation(Dependencies.gson)
 }
