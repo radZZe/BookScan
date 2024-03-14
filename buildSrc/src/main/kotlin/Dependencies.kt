@@ -28,11 +28,35 @@ object Dependencies {
     const val pager_indicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist_version}"
     const val splash_api = "androidx.core:core-splashscreen:${Versions.splash_api}"
     const val datastore_preferences = "androidx.datastore:datastore-preferences:${Versions.datastore_preferences}"
-    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-    const val gson = "com.squareup.retrofit2:converter-gson:${Versions.gson}"
-
+    const val accompanist_permissions ="com.google.accompanist:accompanist-permissions:${Versions.accompanist_permissions}"
+    const val camera_core = "androidx.camera:camera-core:${Versions.camera}"
+    const val camera_camera2 = "androidx.camera:camera-core:${Versions.camera}"
+    const val camera_lifecycle = "androidx.camera:camera-lifecycle:${Versions.camera}"
+    const val camera_view = "androidx.camera:camera-view:${Versions.camera}"
+    const val camera_extensions = "androidx.camera:camera-extensions:${Versions.camera}"
+    const val okhttpBom = "com.squareup.okhttp3:okhttp-bom:${Versions.logging}"
+    const val logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.logging}"
+    const val retrofit2 = "com.squareup.retrofit2:retrofit:${Versions.retrofit2}"
+    const val retrofit2_gson ="com.squareup.retrofit2:converter-gson:${Versions.gson}"
+    const val coil  = "io.coil-kt:coil-compose:${Versions.coil}"
 }
 
+
+fun DependencyHandler.retrofit(){
+    implementation(Dependencies.okhttpBom)
+    implementation(Dependencies.retrofit2)
+    implementation(Dependencies.retrofit2_gson)
+    implementation(Dependencies.logging_interceptor)
+}
+
+fun DependencyHandler.camera(){
+    implementation(Dependencies.accompanist_permissions)
+    implementation(Dependencies.camera_core)
+    implementation(Dependencies.camera_camera2)
+    implementation(Dependencies.camera_lifecycle)
+    implementation(Dependencies.camera_view)
+    implementation(Dependencies.camera_extensions)
+}
 
 fun DependencyHandler.compose() {
     implementation(Dependencies.activity_compose)

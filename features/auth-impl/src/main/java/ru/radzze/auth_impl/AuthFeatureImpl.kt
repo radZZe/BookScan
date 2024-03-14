@@ -1,6 +1,9 @@
 package ru.radzze.auth_impl
 
+import android.content.Intent
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType

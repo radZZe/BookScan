@@ -15,7 +15,12 @@ object Versions {
     const val accompanist_version ="0.24.2-alpha"
     const val splash_api = "1.0.0-beta01"
     const val datastore_preferences = "1.0.0"
-    const val retrofit = "2.6.0"
+    const val accompanist_permissions = "0.31.1-alpha"
+    const val camera = "1.2.2"
+    const val retrofit2 = "2.9.0"
     const val gson = "2.5.0"
-
+    const val otto = "1.3.8"
+    const val logging ="4.10.0"
+    const val okHttp = "4.9.0"
+    const val coil = "2.6.0"
 }

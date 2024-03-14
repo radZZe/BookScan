@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var libraryFeatureApi: LibraryFeatureApi
 
+
     private val mViewModel: MainActivityViewModel by viewModels()
 
 

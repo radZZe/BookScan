@@ -49,8 +49,6 @@ dependencies {
     core()
     authFeatureApi()
     scanFeatureApi()
-    //implementation(project(":data"))
-
     hilt()
     compose()
     navigation()

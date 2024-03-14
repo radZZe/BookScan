@@ -1,5 +1,8 @@
 package ru.radzze.bookscan.navigation
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.util.Log
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,25 +22,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import ru.radzze.bookscan.R
 import ru.radzze.bookscan.ui.theme.BackgroundBottomNav
 import ru.radzze.bookscan.ui.theme.PrimaryYellow
 import ru.radzze.curvedbottomnav.MeowBottomNavigation
+import java.util.concurrent.Executor
 
 
 @Composable
 fun BottomBarXml(navController: NavController, tabs: List<BottomTabs>) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
 
     val routes = remember { tabs.map { it.route } }
     if ((navBackStackEntry?.destination?.route ?: tabs[0].route) in routes) {
@@ -59,19 +64,20 @@ fun BottomBarXml(navController: NavController, tabs: List<BottomTabs>) {
                             0 -> bottomBarNavigate(
                                 navController,
                                 tabs[0].route,
-                                navBackStackEntry?.destination?.route ?: tabs[0].route
+                                navBackStackEntry?.destination?.route ?: tabs[0].route,
+
                             )
 
                             1 -> bottomBarNavigate(
                                 navController,
                                 tabs[1].route,
-                                navBackStackEntry?.destination?.route ?: tabs[0].route
+                                navBackStackEntry?.destination?.route ?: tabs[0].route,
                             )
 
                             2 -> bottomBarNavigate(
                                 navController,
                                 tabs[2].route,
-                                navBackStackEntry?.destination?.route ?: tabs[0].route
+                                navBackStackEntry?.destination?.route ?: tabs[0].route,
                             )
                         }
                     }
@@ -83,7 +89,7 @@ fun BottomBarXml(navController: NavController, tabs: List<BottomTabs>) {
 
 }
 
-fun bottomBarNavigate(navController: NavController, route: String, currentRoute: String) {
+fun bottomBarNavigate(navController: NavController, route: String, currentRoute: String,) {
     if (route != currentRoute) {
         navController.navigate(route) {
             popUpTo(navController.graph.startDestinationId) {
@@ -95,46 +101,4 @@ fun bottomBarNavigate(navController: NavController, route: String, currentRoute:
     }
 }
 
-
-@Composable
-fun BottomBarItem(
-    modifier: Modifier,
-    onClick: () -> Unit,
-    icon: @Composable () -> Unit,
-    label: @Composable() (() -> Unit),
-) {
-    Column(
-        modifier = modifier
-            .size(80.dp)
-            .clickable {
-                onClick()
-            },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-
-    ) {
-        icon()
-        label()
-    }
-}
-
-
-@Composable
-fun BottomBarIcon(
-    modifier: Modifier,
-    icon: @Composable () -> Unit,
-) {
-    Column(
-        modifier = modifier
-            .padding(bottom = 45.dp)
-            .zIndex(3f)
-            .clip(CircleShape)
-            .size(60.dp)
-            .background(PrimaryYellow),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        icon()
-    }
-}
 

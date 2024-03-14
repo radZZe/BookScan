@@ -14,6 +14,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -38,12 +41,22 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    dataBinding{
+        enable = true
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
     hilt {
         enableAggregatingTask = false
     }
 }
 
 dependencies {
+    retrofit()
+    camera()
     core()
     scanFeatureApi()
     hilt()
