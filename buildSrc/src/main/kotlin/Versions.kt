@@ -23,5 +23,4 @@ object Versions {
     const val logging ="4.10.0"
     const val okHttp = "4.9.0"
     const val coil = "2.6.0"
-
 }

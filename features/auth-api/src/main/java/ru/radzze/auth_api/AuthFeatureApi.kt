@@ -4,4 +4,5 @@ import ru.radzze.core.FeatureApi
 
 interface AuthFeatureApi:FeatureApi {
     val authRoute:String
+    val codeVerificationRoute:String
 }
