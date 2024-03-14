@@ -1,11 +1,12 @@
 package ru.radzze.scan_impl
 
-import android.content.Context
-import androidx.camera.view.LifecycleCameraController
+import android.net.Uri
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import ru.radzze.scan_api.ScanFeatureApi
 import ru.radzze.scan_impl.ui.ResultScanScreen
@@ -18,7 +19,7 @@ class ScanFeatureImpl @Inject constructor(
         get() = "scan"
     private val resultScanRoute = "resultScan"
     private val nestedScanGraph = "nestedScanGraph"
-
+    private val imageArg = "image"
 
 
     override fun registerGraph(
@@ -28,22 +29,30 @@ class ScanFeatureImpl @Inject constructor(
     ) {
         navGraphBuilder.composable(scanRoute) {
             ScanScreen(onResultScanNavigate = {
-                navController.navigate(resultScanRoute)
+                val route = "$resultScanRoute/$it"
+                navController.navigate(route)
             })
         }
 
         navGraphBuilder.navigation(
-            startDestination = resultScanRoute,
-            route=nestedScanGraph
-        ){
-            composable(resultScanRoute){
-                ResultScanScreen {
-                    navController.navigate(scanRoute){
-                        popUpTo(nestedScanGraph){
-                            inclusive = true
-                        }
-                    }
-                }
+            startDestination ="$resultScanRoute/{$imageArg}",
+            route = nestedScanGraph
+        ) {
+            composable(
+                "$resultScanRoute/{$imageArg}",
+                arguments = listOf(navArgument(imageArg) { this.type = NavType.StringType })
+            ) { backStackEntry ->
+                val encodeUri = backStackEntry.arguments?.getString(imageArg)?.replace('|','%')
+                val decodeUri = Uri.parse(encodeUri)
+                ResultScanScreen(
+                        image = decodeUri,
+                        onBackNavigate = {
+                            navController.navigate(scanRoute) {
+                                popUpTo(nestedScanGraph) {
+                                    inclusive = true
+                                }
+                            }
+                        })
             }
         }
     }

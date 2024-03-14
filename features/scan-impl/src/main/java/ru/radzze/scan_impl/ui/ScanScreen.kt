@@ -1,9 +1,10 @@
 package ru.radzze.scan_impl.ui
 
+import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -15,7 +16,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.FLASH_MODE_OFF
 import androidx.camera.core.ImageCapture.FLASH_MODE_ON
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
@@ -25,58 +25,51 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
-import androidx.core.app.ActivityCompat
-import androidx.core.app.PendingIntentCompat.getActivity
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import dagger.hilt.android.qualifiers.ApplicationContext
-import ru.radzze.core.models.NETWORK_STATUS
+import kotlinx.coroutines.runBlocking
 import ru.radzze.scan_impl.R
-import java.util.concurrent.Executor
-import java.util.jar.Manifest
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.Executors
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ScanScreen(
-    onResultScanNavigate: () -> Unit,
+    onResultScanNavigate: (encodeUri: String) -> Unit,
 ) {
+    val decodeImage: MutableState<String?> = remember {
+        mutableStateOf(null)
+    }
+    if(decodeImage.value != null){
+        onResultScanNavigate(decodeImage.value!!)
+        decodeImage.value = null
+    }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,7 +77,9 @@ fun ScanScreen(
         val cameraPermissionState: PermissionState =
             rememberPermissionState(permission = android.Manifest.permission.CAMERA)
         if (cameraPermissionState.status.isGranted) {
-            CameraScreen(onResultScanNavigate = onResultScanNavigate)
+            CameraScreen(onResultScanNavigate = {
+                decodeImage.value = it
+            })
         } else {
             NoPermissionScreen {
                 cameraPermissionState.launchPermissionRequest()
@@ -96,13 +91,9 @@ fun ScanScreen(
 
 @Composable
 fun CameraScreen(
-    onResultScanNavigate: () -> Unit,
+    onResultScanNavigate: (encodeUri:String) -> Unit,
     viewModel: ScanScreenViewModel = hiltViewModel()
 ) {
-    if (viewModel.scanRequest == NETWORK_STATUS.SUCCESS) {
-        onResultScanNavigate()
-        viewModel.cleanScanRequest()
-    }
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val cameraController: LifecycleCameraController = remember {
@@ -112,7 +103,6 @@ fun CameraScreen(
             )
         }
     }
-    val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -132,40 +122,34 @@ fun CameraScreen(
                 contentDescription = null
             )
         }
-        PickPhotoFromGalleryButton(onSuccess = {bitmap->
+        PickPhotoFromGalleryButton(
+            onSuccess = { bitmap ->
 
-        }, modifier =Modifier
-            .zIndex(2f)
-            .padding(end = 16.dp, top = 16.dp)
-            .clip(
-                RoundedCornerShape(15)
-            )
-            .background(Color(53, 53, 53, 141))
-            .padding(16.dp)
-            .align(Alignment.TopEnd) )
+            }, modifier = Modifier
+                .zIndex(2f)
+                .padding(end = 16.dp, top = 16.dp)
+                .clip(
+                    RoundedCornerShape(15)
+                )
+                .background(Color(53, 53, 53, 141))
+                .padding(16.dp)
+                .align(Alignment.TopEnd)
+        )
+
+
         Button(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .zIndex(2f)
                 .padding(bottom = 80.dp),
             onClick = {
-                // TODO ВЫНЕСТИ В ОТДЕЛЬНУЮ ФУНКЦИЮ
-                cameraController.imageCaptureFlashMode =
-                    if (viewModel.isFlashModeOn) FLASH_MODE_ON else FLASH_MODE_OFF
-                cameraController.takePicture(
-                    mainExecutor,
-                    object : ImageCapture.OnImageCapturedCallback() {
-                        override fun onCaptureSuccess(image: ImageProxy) {
-                            Log.d("IMAGE CAPT", image.toString())
-                            viewModel.sendImageToScan(image.toString())
-                            image.close()
-                        }
-
-                        override fun onError(exception: ImageCaptureException) {
-                            Log.e("IMAGE CAPT", "Error capturing image", exception)
-                        }
-
-                    })
+                takePicture(
+                    cameraController = cameraController,
+                    isFlashModeOn = viewModel.isFlashModeOn,
+                    context = context
+                ){
+                    onResultScanNavigate(it)
+                }
             }) {
             Text(text = "Сканировать", color = Color.Black)
         }
@@ -226,7 +210,8 @@ fun PickPhotoFromGalleryButton(
         }
     }
     Box(
-        modifier = modifier){
+        modifier = modifier
+    ) {
         Image(
             modifier = Modifier.clickable {
                 photoPicker.launch(
@@ -235,8 +220,57 @@ fun PickPhotoFromGalleryButton(
                     )
                 )
             },
-            painter = painterResource(id =  R.drawable.baseline_perm_media_24),
+            painter = painterResource(id = R.drawable.baseline_perm_media_24),
             contentDescription = null
         )
     }
+}
+
+fun takePicture(
+    cameraController: LifecycleCameraController,
+    isFlashModeOn: Boolean,
+    context: Context,
+    onSuccess: (encodeUri: String) -> Unit
+) {
+    val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
+        .format(System.currentTimeMillis())
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/BookScan")
+        }
+    }
+
+    val outputOptions = ImageCapture.OutputFileOptions
+        .Builder(
+            context.contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+        .build()
+
+    val cameraExecutor = Executors.newSingleThreadExecutor()
+
+    cameraController.imageCaptureFlashMode =
+        if (isFlashModeOn) FLASH_MODE_ON else FLASH_MODE_OFF
+    cameraController.takePicture(
+        outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
+            override fun onError(exc: ImageCaptureException) {
+                Log.e("IMAGE CAPT", "Photo capture failed: ${exc.message}", exc)
+            }
+
+            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                val savedUri = output.savedUri
+                if(savedUri != null){
+                    runBlocking {
+                        val encodeUri = Uri.encode(savedUri.toString().replace('%','|'))
+                        onSuccess(encodeUri)
+                    }
+
+                }
+                Log.d("IMAGE CAPT", "Photo capture succeeded: $savedUri")
+            }
+        })
 }
