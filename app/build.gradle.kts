@@ -85,7 +85,7 @@ dependencies {
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
     implementation(Dependencies.datastore_preferences)
-    implementation(Dependencies.retrofit)
+    retrofit()
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.ext_junit)
     androidTestImplementation(Dependencies.espresso)

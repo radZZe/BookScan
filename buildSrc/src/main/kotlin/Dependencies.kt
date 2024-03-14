@@ -134,11 +134,3 @@ fun DependencyHandler.navigation() {
 fun DependencyHandler.data() {
     implementation(project(":data"))
 }
-
-fun DependencyHandler.retrofit() {
-    implementation(Dependencies.retrofit)
-}
-
-fun DependencyHandler.gson() {
-    implementation(Dependencies.gson)
-}
