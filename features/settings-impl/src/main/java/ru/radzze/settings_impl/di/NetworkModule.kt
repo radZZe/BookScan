@@ -1,4 +1,4 @@
-package ru.radzze.auth_impl.di
+package ru.radzze.settings_impl.di
 
 import dagger.Module
 import dagger.Provides
@@ -6,7 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.radzze.auth_impl.domain.AuthService
+import ru.radzze.settings_impl.domain.UserService
 import javax.inject.Singleton
 
 @Module
@@ -15,22 +15,22 @@ class NetworkModule {
 
 //    @Provides
 //    @Singleton
-//    fun provideOkHttpClientAuth(): OkHttpClient {
+//    fun provideOkHttpClientUser(): OkHttpClient {
 //        return OkHttpClient().newBuilder()
 //            .build()
 //    }
 
     @Provides
     @Singleton
-    fun provideAuthService(
+    fun provideUserService(
 //        client: OkHttpClient
-    ): AuthService {
+    ): UserService {
         val url = "https://wyeok.wiremockapi.cloud/"
         return Retrofit.Builder()
             .baseUrl(url)
 //            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(AuthService::class.java)
+            .create(UserService::class.java)
     }
 }
