@@ -266,7 +266,7 @@ private fun VerificationCodeFields(
     val borderColor =
         if (isValid == true) Color.Green else if (isValid == null) Color.Transparent else Color.Red
     val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+//    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -304,7 +304,7 @@ private fun VerificationCodeFields(
                     )
                     viewModel.connectInputtedCode {
                         focusManager.clearFocus()
-                        keyboardController?.hide()
+//                        keyboardController?.hide()
                         if (!it) {
                             for (text in textList.indices) {
                                 val value = TextFieldValue(
