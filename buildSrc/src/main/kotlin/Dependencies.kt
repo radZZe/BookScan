@@ -134,3 +134,7 @@ fun DependencyHandler.navigation() {
 fun DependencyHandler.data() {
     implementation(project(":data"))
 }
+
+fun DependencyHandler.coil() {
+    implementation(Dependencies.coil)
+}

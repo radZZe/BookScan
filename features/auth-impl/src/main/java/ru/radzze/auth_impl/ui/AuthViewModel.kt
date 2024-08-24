@@ -38,6 +38,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun sendCodeToEmail(onNavigate: (String) -> Unit) {
+        val anus = email
+        val jopa = 0
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val result = service.authUser(email).isSuccessful
