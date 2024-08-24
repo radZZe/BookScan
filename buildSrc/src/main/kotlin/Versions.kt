@@ -11,7 +11,6 @@ object Versions {
     const val compose_compiler = "1.4.3"
     const val core_ktx = "1.9.0"
     const val appcompat = "1.6.1"
-    const val material = "1.11.0"
     const val accompanist_version ="0.24.2-alpha"
     const val splash_api = "1.0.0-beta01"
     const val datastore_preferences = "1.0.0"
@@ -23,4 +22,7 @@ object Versions {
     const val logging ="4.10.0"
     const val okHttp = "4.9.0"
     const val coil = "2.6.0"
+    const val material = "1.6.3"
+    const val material3 ="1.1.0"
+    const val compose_version = "1.0.1"
 }

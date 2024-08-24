@@ -93,7 +93,6 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         bottomBar = { BottomBarXml(navController = navController, bottomNavTabs) }
                     ) {
-
                         AppNavGraph(
                             modifier = Modifier.padding(it),
                             navController = navController,

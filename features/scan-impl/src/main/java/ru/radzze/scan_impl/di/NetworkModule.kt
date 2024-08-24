@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.radzze.scan_impl.domain.BookInfoService
 import ru.radzze.scan_impl.domain.ScanService
 import javax.inject.Singleton
 
@@ -27,14 +28,23 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideScanService(
-//        client: OkHttpClient
     ): ScanService {
         return Retrofit
             .Builder()
             .baseUrl("https://lj9wj.wiremockapi.cloud/")
-//            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ScanService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideBookInfoService(
+    ): BookInfoService {
+        return Retrofit
+            .Builder()
+            .baseUrl("https://lj9wj.wiremockapi.cloud/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BookInfoService::class.java)
     }
 }
