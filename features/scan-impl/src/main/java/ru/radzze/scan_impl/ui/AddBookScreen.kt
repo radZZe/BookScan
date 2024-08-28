@@ -10,7 +10,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,20 +25,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
-import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.FloatingActionButtonElevation
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -91,6 +89,15 @@ fun AddBookScreen(
         BookImage()
         Spacer(modifier = Modifier.height(15.dp))
         BookField(viewModel)
+        Button(
+            onClick = { viewModel.saveAddedBook() },
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            Text(text = "Сохранить", color = Color.Black)
+        }
     }
 }
 
@@ -144,6 +151,7 @@ fun BookImage() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookField(
     viewModel: AddBookScreenViewModel
@@ -214,7 +222,9 @@ fun BookField(
             })
     }
     if (viewModel.showBottomSheetYear) {
-        YearBottomSheet(onDismissRequest = { viewModel.onChangeYearBottomSheetState() }, onYearChanged = {viewModel.onYearChanged(it)})
+        YearBottomSheet(
+            onDismissRequest = { viewModel.onChangeYearBottomSheetState() },
+            onYearChanged = { viewModel.onYearChanged(it) })
     }
     if (viewModel.showBottomSheetFormat) {
         FormatBottomSheet(viewModel.formatList, {
@@ -271,15 +281,17 @@ fun CustomDropDown(
                 )
             }
         },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.LightGray,
-            focusedLabelColor = Color.Gray,
-            unfocusedTrailingIconColor = Color.Transparent,
-            focusedTrailingIconColor = Color.LightGray,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.LightGray,
+            unfocusedIndicatorColor = Color.LightGray,
+            errorIndicatorColor = Color.Red,
+            focusedTrailingIconColor = Color.LightGray,
+            unfocusedTrailingIconColor = Color.Transparent,
+            focusedLabelColor = Color.Gray,
             unfocusedSupportingTextColor = Color.LightGray,
-            errorIndicatorColor = Color.Red
         ),
         trailingIcon = {
             Icon(
@@ -377,7 +389,7 @@ fun YearBottomSheet(onDismissRequest: () -> Unit, onYearChanged: (String) -> Uni
                 .padding(horizontal = 10.dp)
         ) {
             TopBarModalBottomSheet("Год издания")
-            YearOfPublish() {
+            YearOfPublish {
                 onYearChanged(it)
             }
         }

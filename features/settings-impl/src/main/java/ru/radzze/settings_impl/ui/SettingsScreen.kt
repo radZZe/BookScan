@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -46,9 +45,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import ru.radzze.core.ui.shimmerEffect
 import ru.radzze.settings_impl.R
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun SettingsScreen(
@@ -270,9 +269,9 @@ fun DisabledTextField(
         onValueChange = {},
         enabled = false,
         shape = RoundedCornerShape(12.dp),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color(0xFF272727),
-            containerColor = Color(0xFFEFEBDE),
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = Color(0xFF272727),
+            unfocusedTextColor = Color(0xFF272727),
             disabledTextColor = Color(0xFF272727),
             disabledIndicatorColor = Color.Transparent
         )

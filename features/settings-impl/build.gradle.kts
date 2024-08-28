@@ -47,7 +47,6 @@ dependencies {
 
     core()
     settingsFeatureApi()
-
     hilt()
     compose()
     navigation()
