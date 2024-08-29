@@ -16,6 +16,8 @@ object Dependencies {
     const val compose_ui_graphics = "androidx.compose.ui:ui-graphics"
     const val compose_ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview"
     const val compose_material3 = "androidx.compose.material3:material3"
+    const val material3 = "androidx.compose.material3:material3:${Versions.material3}"
+    const val compose_material = "androidx.compose.material:material:${Versions.compose_version}"
     const val junit = "junit:junit:${Versions.junit}"
     const val ext_junit = "androidx.test.ext:junit:${Versions.ext_junit}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
@@ -23,7 +25,7 @@ object Dependencies {
     const val compose_ui_tooling = "androidx.compose.ui:ui-tooling"
     const val compose_ui_test = "androidx.compose.ui:ui-test-manifest"
     const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
-    const val android_material = "com.google.android.material:material:${Versions.material}"
+    const val android_material = "androidx.compose.material:material:${Versions.material}"
     const val pager = "com.google.accompanist:accompanist-pager:${Versions.accompanist_version}"
     const val pager_indicators = "com.google.accompanist:accompanist-pager-indicators:${Versions.accompanist_version}"
     const val splash_api = "androidx.core:core-splashscreen:${Versions.splash_api}"
@@ -59,6 +61,9 @@ fun DependencyHandler.camera(){
 }
 
 fun DependencyHandler.compose() {
+    implementation(Dependencies.material3)
+    implementation(Dependencies.compose_material)
+    implementation(Dependencies.android_material)
     implementation(Dependencies.activity_compose)
     implementation(platform(Dependencies.compose_bom))
     implementation(Dependencies.compose_ui)
@@ -133,4 +138,8 @@ fun DependencyHandler.navigation() {
 
 fun DependencyHandler.data() {
     implementation(project(":data"))
+}
+
+fun DependencyHandler.coil() {
+    implementation(Dependencies.coil)
 }

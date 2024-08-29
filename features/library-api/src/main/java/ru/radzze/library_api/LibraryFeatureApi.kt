@@ -4,4 +4,5 @@ import ru.radzze.core.FeatureApi
 
 interface LibraryFeatureApi:FeatureApi {
     val libraryRoute:String
+    val filterRoute: String
 }

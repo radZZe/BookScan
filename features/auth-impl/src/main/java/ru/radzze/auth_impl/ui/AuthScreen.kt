@@ -122,7 +122,8 @@ fun EmailField(
             }
         },
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
+//            unfocusedContainerColor = Color.Transparent,
+//            focusedContainerColor = Color.Transparent,
             unfocusedIndicatorColor = Color.LightGray,
             focusedLabelColor = Color.Gray,
             unfocusedTrailingIconColor = Color.Transparent,
