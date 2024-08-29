@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "ru.radzze.library_impl"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 27
@@ -47,11 +47,11 @@ dependencies {
 
     core()
     libraryFeatureApi()
-
     hilt()
     compose()
     navigation()
     retrofit()
+    coil()
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
     implementation(Dependencies.coil)

@@ -82,6 +82,10 @@ class LibraryViewModel @Inject constructor(
         _filterRequest.value = filterRequest
     }
 
+    fun setFalse() {
+        _isSearchClicked.value = true
+    }
+
 }
 
 data class Book(

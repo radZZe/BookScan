@@ -121,9 +121,9 @@ fun EmailField(
                 )
             }
         },
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
+        colors = TextFieldDefaults.textFieldColors(
+//            unfocusedContainerColor = Color.Transparent,
+//            focusedContainerColor = Color.Transparent,
             unfocusedIndicatorColor = Color.LightGray,
             focusedLabelColor = Color.Gray,
             unfocusedTrailingIconColor = Color.Transparent,

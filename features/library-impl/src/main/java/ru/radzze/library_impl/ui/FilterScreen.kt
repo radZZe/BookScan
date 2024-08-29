@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -33,17 +34,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -57,11 +66,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.launch
 import ru.radzze.library_impl.R
+import ru.radzze.library_impl.data.CheckBox
 import ru.radzze.library_impl.data.FilterRequest
 import ru.radzze.library_impl.data.GridItem
 
@@ -109,7 +119,7 @@ fun FilterScreen(
             viewModel.radioOptions
         ) { viewModel.onRadioSwitch(it) }
         Spacer(modifier = Modifier.height(8.dp))
-        Genres(showGenres = { viewModel.onShowGenres() })
+        Genres(onShowGenres = { viewModel.onShowGenres() })
         Spacer(modifier = Modifier.height(8.dp))
         GridSearch(
             label = "Автор",
@@ -155,7 +165,16 @@ fun FilterScreen(
             Text(text = "Применить фильтрацию", color = Color.Black, fontSize = 14.sp)
         }
     }
-
+    if (viewModel.showGenres) {
+        GenresBottomSheet(
+            data = viewModel.genresCheckbox,
+            onDismissRequest = { viewModel.onShowGenres() },
+            onClearGenres = { viewModel.clearGenres(viewModel.genresCheckbox) },
+            onCheckBoxChange = { data, ind ->
+                viewModel.changeGenresState(data, ind)
+            }
+        )
+    }
 }
 
 @Composable
@@ -232,12 +251,10 @@ fun CustomRadioButton(
 
 @Composable
 fun Genres(
-    showGenres: () -> Unit
+    onShowGenres: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showGenres }
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = "Жанры",
@@ -255,7 +272,7 @@ fun Genres(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
                 .background(Color.White)
-                .clickable { }
+                .clickable { onShowGenres() }
         ) {
             Text(
                 text = "Выбрать жанры",
@@ -270,7 +287,6 @@ fun Genres(
                 contentDescription = null,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
             )
-            // TODO добавить появление BottomSheet с выбором жанров
         }
     }
 }
@@ -406,7 +422,7 @@ fun <T> InfiniteCircularList(
     itemScaleFact: Float = 1.5f,
     textStyle: TextStyle,
     textColor: Color,
-    onItemSelected: (item: T) -> Unit = {_ -> }
+    onItemSelected: (item: T) -> Unit = { _ -> }
 ) {
     val itemHalfHeight = LocalDensity.current.run { itemHeight.toPx() / 2f }
     val scrollState = rememberLazyListState(0)
@@ -508,5 +524,81 @@ fun YearOfPublish(
             ),
             onItemSelected = { onYearChanged(it) }
         )
+    }
+}
+
+@Composable
+fun TopBarModalBottomSheet(
+    title: String,
+    onDismissRequest: () -> Unit,
+    onClearGenres: (SnapshotStateList<CheckBox>) -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Image(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable { onDismissRequest() },
+            painter = painterResource(id = R.drawable.close_circle),
+            contentDescription = null,
+        )
+        Text(modifier = Modifier.align(Alignment.Center), text = title)
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable { onClearGenres },
+            text = "Сбросить", color = Color.Gray
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GenresBottomSheet(
+    data: SnapshotStateList<CheckBox>,
+    onDismissRequest: () -> Unit,
+    onClearGenres: (SnapshotStateList<CheckBox>) -> Unit,
+    onCheckBoxChange: (SnapshotStateList<CheckBox>, Int) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    ModalBottomSheet(
+        onDismissRequest = {
+            scope.launch {
+                sheetState.hide()
+                onDismissRequest()
+            }
+        },
+        sheetState = sheetState
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            TopBarModalBottomSheet("Жанры", { onDismissRequest() }, { onClearGenres(data) })
+            data.forEachIndexed { index, checkBox ->
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
+                    Checkbox(checked = checkBox.state, onCheckedChange = {
+                        onCheckBoxChange(data, index)
+                    })
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = checkBox.label)
+                }
+                Spacer(modifier = Modifier.height(3.dp))
+            }
+            Button(
+                onClick = { onDismissRequest() },
+                shape = RoundedCornerShape(25.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(horizontal = 20.dp)
+            ) {
+                Text(text = "Применить", color = Color.Black, fontSize = 14.sp)
+            }
+        }
     }
 }

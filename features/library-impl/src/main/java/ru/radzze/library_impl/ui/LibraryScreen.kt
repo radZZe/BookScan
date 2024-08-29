@@ -51,9 +51,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
 import ru.radzze.library_impl.R
 import ru.radzze.library_impl.data.FilterRequest
+import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun LibraryScreen(
@@ -63,6 +63,7 @@ fun LibraryScreen(
 ) {
 
     LaunchedEffect(Unit) {
+        viewModel.setFalse()
 //        viewModel.initFilterRequest(filterRequest)
     }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -176,10 +177,10 @@ fun SearchTextField(
         },
         placeholder = { Text(placeholder) },
         shape = RoundedCornerShape(16.dp),
-        colors = TextFieldDefaults.colors(
+        colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = Color.White
+            containerColor = Color.White
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
