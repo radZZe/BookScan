@@ -26,16 +26,13 @@ class ResultScanScreenViewModel @Inject constructor(
     fun sendImageToScan(image: String) {
         _scanRequest.value = NETWORK_STATUS.LOADING
         viewModelScope.launch(Dispatchers.IO) {
-            if (scanService.postScanImage(image)
-                    .code() == 200
+            val response = scanService.postScanImage(image)
+            if (response.code() == 200
             ) {
                 _scanRequest.value = NETWORK_STATUS.SUCCESS
-                val list = mutableListOf<ScannedBook>()
-                for (i in 0..10){
-                    list.add(ScannedBook(title = "title$i", author = "author$i", genre = "genre$i"))
+                if(response.body()!=null){
+                    _scannedBooks.value = response.body()!!
                 }
-                _scannedBooks.value = list
-
             } else _scanRequest.value = NETWORK_STATUS.FAILED
         }
     }

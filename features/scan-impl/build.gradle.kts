@@ -62,6 +62,7 @@ dependencies {
     hilt()
     compose()
     navigation()
+    implementation(Dependencies.coil)
     implementation(Dependencies.core_ktx)
     implementation(Dependencies.lifecycle_runtime_ktx)
     testImplementation(Dependencies.junit)
