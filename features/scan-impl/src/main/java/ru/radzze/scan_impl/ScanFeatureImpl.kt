@@ -26,6 +26,8 @@ class ScanFeatureImpl @Inject constructor(
     private val nestedScanGraph = "nestedScanGraph"
     private val addBookRoute = "addBookScreen"
     private val imageArg = "image"
+    private val titleArg = "title"
+    private val isbnArg = "isbn"
 
 
     override fun registerGraph(
@@ -68,12 +70,23 @@ class ScanFeatureImpl @Inject constructor(
             {
                 FindBookScreen(
                     onBackNavigate = {navController.popBackStack()},
-                    onResultNavigate = {navController.navigate(findBookResult)}
+                    onResultNavigate = { title,isbn ->
+                        val route = "$findBookResult/$title/$isbn"
+                        navController.navigate(route)
+                    }
                 )
             }
 
-            composable(findBookResult){
-                FindBookResultScreen(onBackNavigate = {
+            composable(
+                "$findBookResult/$titleArg/$isbnArg",
+                arguments = listOf(navArgument(titleArg) { this.type = NavType.StringType },
+                    navArgument(isbnArg) { this.type = NavType.StringType })){backStackEntry ->
+                val title = backStackEntry.arguments?.getString(titleArg)
+                val isbn = backStackEntry.arguments?.getString(isbnArg)
+                FindBookResultScreen(
+                    title!!,
+                    isbn!!,
+                    onBackNavigate = {
                     navController.popBackStack()
                 },
                     onAddBookNavigate={

@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.radzze.auth_impl.data.SendCodeDto
 import ru.radzze.auth_impl.domain.AuthService
 import javax.inject.Inject
 
@@ -38,11 +39,9 @@ class AuthViewModel @Inject constructor(
     }
 
     fun sendCodeToEmail(onNavigate: (String) -> Unit) {
-        val anus = email
-        val jopa = 0
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                val result = service.authUser(email).isSuccessful
+                val result = service.authUser(SendCodeDto(email)).isSuccessful
                 if (result) {
                     withContext(Dispatchers.Main) { onNavigate(email) }
                 } else {

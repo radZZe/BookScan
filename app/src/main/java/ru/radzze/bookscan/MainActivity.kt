@@ -27,6 +27,7 @@ import ru.radzze.bookscan.navigation.AppNavGraph
 import ru.radzze.bookscan.navigation.BottomBarXml
 import ru.radzze.bookscan.navigation.BottomTabs
 import ru.radzze.bookscan.ui.theme.BookScanTheme
+import ru.radzze.bookscan.R
 import ru.radzze.library_api.LibraryFeatureApi
 import ru.radzze.onboarding_api.OnboardingFeatureApi
 import ru.radzze.onboarding_impl.domain.OnboardingRepository

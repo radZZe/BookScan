@@ -1,34 +1,59 @@
 package ru.radzze.auth_impl.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.radzze.auth_impl.domain.AuthService
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+object NetworkModule {
 
 //    @Provides
 //    @Singleton
 //    fun provideOkHttpClientAuth(): OkHttpClient {
-//        return OkHttpClient().newBuilder()
+//        val loggingInterceptor = HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
+//
+//        return OkHttpClient.Builder()
+//            .connectTimeout(30, TimeUnit.SECONDS)
+//            .writeTimeout(30, TimeUnit.SECONDS)
+//            .readTimeout(30, TimeUnit.SECONDS)
+//            .addInterceptor { chain ->
+//                val request = chain.request()
+//                Log.d("NetworkDebug", """
+//                URL: ${request.url}
+//                Method: ${request.method}
+//                Headers: ${request.headers}
+//            """.trimIndent())
+//                try {
+//                    chain.proceed(request)
+//                } catch (e: Exception) {
+//                    Log.e("NetworkDebug", "Error: ${e.message}", e)
+//                    throw e
+//                }
+//            }
+//            .addInterceptor(loggingInterceptor)
 //            .build()
 //    }
 
     @Provides
     @Singleton
     fun provideAuthService(
-//        client: OkHttpClient
+        okHttpClient: OkHttpClient
     ): AuthService {
-        val url = "https://wyeok.wiremockapi.cloud/"
         return Retrofit.Builder()
-            .baseUrl(url)
-//            .client(client)
+            .baseUrl("http://10.0.2.2:5078/")
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthService::class.java)

@@ -20,13 +20,15 @@ import kotlinx.coroutines.launch
 import ru.radzze.auth_impl.data.LoginRequest
 import ru.radzze.auth_impl.domain.AuthRepository
 import ru.radzze.auth_impl.domain.AuthService
+import ru.radzze.core.data.TokenManager
 import javax.inject.Inject
 
 
 @HiltViewModel
 class CodeVerificationViewModel @Inject constructor(
     private val service: AuthService,
-    private val repository: AuthRepository
+    private val repository: AuthRepository,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
 
     private val _textList = mutableStateListOf(
@@ -176,9 +178,12 @@ class CodeVerificationViewModel @Inject constructor(
     ) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
-                val loginRequest = LoginRequest(email = email.value, code = code.toInt())
+                val loginRequest = LoginRequest(email = email.value, code = code)
                 val result = service.verifyUser(loginRequest)
                 if (result.isSuccessful) {
+                    result.body()?.token?.let { token ->
+                        tokenManager.authToken = token
+                    }
                     onSuccess()
                 } else {
                     failedAttempts++
@@ -188,10 +193,9 @@ class CodeVerificationViewModel @Inject constructor(
                     }
                     onError()
                 }
-
             }
         } catch (_: Exception) {
-
+            onError()
         }
     }
 

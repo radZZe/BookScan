@@ -32,9 +32,10 @@ import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import ru.radzze.bookscan.R
 import ru.radzze.bookscan.ui.theme.BackgroundBottomNav
 import ru.radzze.bookscan.ui.theme.PrimaryYellow
+import ru.radzze.bookscan.R
+
 import ru.radzze.curvedbottomnav.MeowBottomNavigation
 import java.util.concurrent.Executor
 

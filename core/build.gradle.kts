@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,6 +44,8 @@ android {
 dependencies {
     compose()
     navigation()
+    retrofit()
+    hilt()
     implementation(Dependencies.core_ktx)
     testImplementation(Dependencies.junit)
     androidTestImplementation(Dependencies.ext_junit)

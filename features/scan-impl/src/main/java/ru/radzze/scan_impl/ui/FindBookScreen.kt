@@ -37,7 +37,7 @@ import ru.radzze.scan_impl.R
 @Composable
 fun FindBookScreen(
     onBackNavigate: () -> Unit,
-    onResultNavigate: () -> Unit,
+    onResultNavigate: (title:String,isbn:String) -> Unit,
     viewModel: FindBookViewModel = hiltViewModel()
 ) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -91,7 +91,7 @@ fun FindBookScreen(
             Button(modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(0.9f), onClick = {
-                onResultNavigate()
+                onResultNavigate(viewModel.name.value,viewModel.isbn.value)
             }) {
                 Text(text = "Найти книгу", color = Color.Black)
             }

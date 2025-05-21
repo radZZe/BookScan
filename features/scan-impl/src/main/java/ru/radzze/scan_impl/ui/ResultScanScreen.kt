@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import kotlinx.coroutines.delay
 import ru.radzze.core.models.NETWORK_STATUS
 import ru.radzze.core.ui.TopBar
@@ -70,11 +72,18 @@ fun ResultScanScreen(
     viewModel: ResultScanScreenViewModel = hiltViewModel(),
     onFindBookNavigate:()->Unit,
 ) {
-    if (viewModel.scanRequest == NETWORK_STATUS.NONE || viewModel.scanRequest == NETWORK_STATUS.LOADING) {
-        viewModel.sendImageToScan(image.toString())
+    val context = LocalContext.current
+    if (viewModel.scanRequest == NETWORK_STATUS.LOADING) {
+        ShimmerResultScreen()
+    }
+    if (viewModel.scanRequest == NETWORK_STATUS.NONE) {
+        viewModel.sendImageToScan(viewModel.getImageBase64FromUri(context,image!!))
         ShimmerResultScreen()
     } else if (viewModel.scanRequest == NETWORK_STATUS.SUCCESS) {
-        ResultScanContent(onBackNavigate, image, viewModel.scannedBook,onFindBookNavigate)
+        ResultScanContent(onBackNavigate, image, viewModel.scannedBook,onFindBookNavigate, {
+            viewModel.saveUserBooks()
+            onBackNavigate()
+        })
     } else {
         //TODO ОБРАБОТКА ОШИБКИ
     }
@@ -170,7 +179,7 @@ fun ShimmerResultScreen() {
 }
 
 @Composable
-fun ResultScanContent(onBackNavigate: () -> Unit, image: Uri?, books: List<ScannedBook>,onFindBookNavigate: () -> Unit) {
+fun ResultScanContent(onBackNavigate: () -> Unit, image: Uri?, books: List<ScannedBook>,onFindBookNavigate: () -> Unit,onSaveUserBook: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -195,7 +204,7 @@ fun ResultScanContent(onBackNavigate: () -> Unit, image: Uri?, books: List<Scann
                     .weight(1f)
                     .padding(7.dp, 5.dp),
                 colors = ButtonDefaults.buttonColors(contentColor = Color.Black),
-                onClick = { /*TODO*/ }) {
+                onClick = { onSaveUserBook() }) {
                 Text(text = "Сохранить", fontSize = 12.sp)
             }
         }
@@ -216,12 +225,24 @@ fun ResultScanContent(onBackNavigate: () -> Unit, image: Uri?, books: List<Scann
                     .height(400.dp)
                     .clip(RoundedCornerShape(15))
             ) {
-                Image(
-                    modifier = Modifier.fillMaxHeight(),
-                    painter = painterResource(id = R.drawable.book_image_mock),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
+                if (image != null) {
+                    val painter = rememberImagePainter(
+                        image
+                    )
+                    Image(
+                        modifier = Modifier.fillMaxHeight(),
+                        painter = painter,
+                        contentDescription = "Image loaded from URI",
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        modifier = Modifier.fillMaxHeight(),
+                        painter = painterResource(id = R.drawable.book_image_mock),
+                        contentDescription = "Placeholder Image",
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(5.dp))
             Text(

@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -91,7 +92,7 @@ fun ScanScreen(
 
 @Composable
 fun CameraScreen(
-    onResultScanNavigate: (encodeUri:String) -> Unit,
+    onResultScanNavigate: (encodeUri: String) -> Unit,
     viewModel: ScanScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -103,14 +104,42 @@ fun CameraScreen(
             )
         }
     }
+
+    // Состояние для выбранного изображения
+    val selectedImage: MutableState<Bitmap?> = remember { mutableStateOf(null) }
+
     Box(modifier = Modifier.fillMaxSize()) {
+        // Если изображение выбрано, показываем его, иначе камеру
+        if (selectedImage.value != null) {
+            Image(
+                bitmap = selectedImage.value!!.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center)
+            )
+        } else {
+            AndroidView(
+                modifier = Modifier
+                    .fillMaxSize(),
+                factory = { context ->
+                    PreviewView(context).apply {
+                        layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                        scaleType = PreviewView.ScaleType.FILL_START
+                    }.also { previewView ->
+                        previewView.controller = cameraController
+                        cameraController.bindToLifecycle(lifecycleOwner)
+                    }
+                }
+            )
+        }
+
         Box(
             modifier = Modifier
                 .zIndex(2f)
                 .padding(start = 16.dp, top = 16.dp)
-                .clip(
-                    RoundedCornerShape(15)
-                )
+                .clip(RoundedCornerShape(15))
                 .background(Color(53, 53, 53, 141))
                 .padding(16.dp)
                 .align(Alignment.TopStart)
@@ -122,20 +151,21 @@ fun CameraScreen(
                 contentDescription = null
             )
         }
-        PickPhotoFromGalleryButton(
-            onSuccess = { bitmap ->
 
-            }, modifier = Modifier
+        // Кнопка для выбора изображения из галереи
+        PickPhotoFromGalleryButton(
+            onSuccess = { bitmap, encodedUri ->
+                selectedImage.value = bitmap // Устанавливаем выбранное изображение
+                onResultScanNavigate(encodedUri) // Выполняем навигацию с передачей encodedUri
+            },
+            modifier = Modifier
                 .zIndex(2f)
                 .padding(end = 16.dp, top = 16.dp)
-                .clip(
-                    RoundedCornerShape(15)
-                )
+                .clip(RoundedCornerShape(15))
                 .background(Color(53, 53, 53, 141))
                 .padding(16.dp)
                 .align(Alignment.TopEnd)
         )
-
 
         Button(
             modifier = Modifier
@@ -147,28 +177,13 @@ fun CameraScreen(
                     cameraController = cameraController,
                     isFlashModeOn = viewModel.isFlashModeOn,
                     context = context
-                ){
+                ) {
                     onResultScanNavigate(it)
                 }
             }) {
             Text(text = "Сканировать", color = Color.Black)
         }
-        AndroidView(
-            modifier = Modifier
-                .fillMaxSize(),
-            factory = { context ->
-                PreviewView(context).apply {
-                    layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                    scaleType = PreviewView.ScaleType.FILL_START
-                }.also { previewView ->
-                    previewView.controller = cameraController
-                    cameraController.bindToLifecycle(lifecycleOwner)
-                }
-            }
-        )
     }
-
 }
 
 @Composable
@@ -192,19 +207,26 @@ fun NoPermissionScreen(
 
 @Composable
 fun PickPhotoFromGalleryButton(
-    onSuccess: (image: Bitmap) -> Unit,
+    onSuccess: (image: Bitmap, encodedUri: String) -> Unit, // Изменяем сигнатуру, добавляя encodedUri
     modifier: Modifier,
 ) {
     val context = LocalContext.current
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) {
-        if (it != null) {
-            val bitmap = MediaStore.Images.Media.getBitmap(
-                context.getContentResolver(),
-                Uri.parse(it.toString())
-            )
-            onSuccess(bitmap)
+    ) { uri ->
+        if (uri != null) {
+            try {
+                // Получаем Bitmap из Uri
+                val bitmap = MediaStore.Images.Media.getBitmap(
+                    context.contentResolver,
+                    uri
+                )
+                // Кодируем Uri для передачи
+                val encodedUri = Uri.encode(uri.toString().replace('%', '|'))
+                onSuccess(bitmap, encodedUri)
+            } catch (e: Exception) {
+                Log.e("PhotoPicker", "Error loading image: ${e.message}", e)
+            }
         } else {
             Log.d("PhotoPicker", "No media selected")
         }

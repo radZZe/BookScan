@@ -54,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ru.radzze.library_impl.R
 import ru.radzze.library_impl.data.FilterRequest
 import coil.compose.rememberAsyncImagePainter
+import ru.radzze.library_impl.domain.models.GetUserBooksDto
 
 @Composable
 fun LibraryScreen(
@@ -64,6 +65,8 @@ fun LibraryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.setFalse()
+        viewModel.clearFindedBook()
+        viewModel.getUserBooks()
 //        viewModel.initFilterRequest(filterRequest)
     }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -110,7 +113,7 @@ fun LibraryScreen(
                 }
             }
         } else {
-            if (viewModel.books.isEmpty()) {
+            if (viewModel.libraryBooks.isEmpty()) {
                 Text(
                     text = "Библиотека пуста. Для отображения, отсканируйте книгу в разделе “Сканер”",
                     fontSize = 16.sp,
@@ -121,7 +124,7 @@ fun LibraryScreen(
             } else {
                 if (viewModel.columnMode.value) {
                     LazyColumn(modifier = modifier) {
-                        items(viewModel.books) { book ->
+                        items(viewModel.libraryBooks) { book ->
                             BookItemColumn(book)
                         }
                     }
@@ -132,7 +135,7 @@ fun LibraryScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = modifier
                     ) {
-                        items(viewModel.books) { book ->
+                        items(viewModel.libraryBooks) { book ->
                             BookItemGrid(book)
                         }
                     }
@@ -241,7 +244,9 @@ fun OptionsRow(
 }
 
 @Composable
-fun BookItemColumn(book: Book) {
+fun BookItemColumn(book:
+                   GetUserBooksDto
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -267,7 +272,7 @@ fun BookItemColumn(book: Book) {
                 .height(100.dp)
         ) {
             Text(
-                text = book.name,
+                text = book.name!!,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 fontSize = 18.sp,
@@ -275,14 +280,14 @@ fun BookItemColumn(book: Book) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = book.author,
+                text = book.author!!,
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = book.isbn,
+                text = book.isbn!!,
                 color = Color.LightGray,
                 fontSize = 16.sp,
                 maxLines = 1,
@@ -293,7 +298,7 @@ fun BookItemColumn(book: Book) {
 }
 
 @Composable
-fun BookItemGrid(book: Book) {
+fun BookItemGrid(book: GetUserBooksDto) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -312,7 +317,7 @@ fun BookItemGrid(book: Book) {
                 .fillMaxWidth()
         )
         Text(
-            text = book.name,
+            text = book.name!!,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             fontSize = 18.sp,
@@ -321,7 +326,7 @@ fun BookItemGrid(book: Book) {
             modifier = Modifier.padding(horizontal = 6.dp)
         )
         Text(
-            text = book.author,
+            text = book.author!!,
             color = Color.LightGray,
             fontSize = 16.sp,
             maxLines = 1,

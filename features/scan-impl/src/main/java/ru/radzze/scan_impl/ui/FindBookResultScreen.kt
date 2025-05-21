@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,10 +39,15 @@ import ru.radzze.scan_impl.R
 
 @Composable
 fun FindBookResultScreen(
+    title:String,
+    isbn:String,
     onBackNavigate: () -> Unit,
     onAddBookNavigate:()->Unit,
     viewModel: FindBookResultViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.findBook(title,isbn)
+    }
     Column() {
         TopBar() {
             onBackNavigate()
@@ -51,11 +57,11 @@ fun FindBookResultScreen(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                itemsIndexed(viewModel.dataList) { index, el ->
+                itemsIndexed(viewModel.findedBook) { index, el ->
                     FindBookItem(
                         image = el.image,
-                        title = el.title,
-                        author = el.author,
+                        title = el.name!!,
+                        author = el.author!!,
                         isSelected = el.isChecked
                     ) {
                         viewModel.changeItemState(index)

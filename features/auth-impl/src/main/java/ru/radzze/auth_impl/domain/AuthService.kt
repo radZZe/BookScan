@@ -6,14 +6,16 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import ru.radzze.auth_impl.data.AuthResponse
 import ru.radzze.auth_impl.data.LoginRequest
+import ru.radzze.auth_impl.data.SendCodeDto
+import ru.radzze.auth_impl.data.VerifyDto
 
 
 interface AuthService {
-    @POST("/auth/email")
-    suspend fun authUser(@Body email: String): Response<Unit>
+    @POST("/api/Auth/send-code")
+    suspend fun authUser(@Body request: SendCodeDto): Response<Unit>
 
-    @POST("/auth/login")
-    suspend fun verifyUser(@Body loginRequest: LoginRequest): Response<AuthResponse>
+    @POST("/api/Auth/verify-code")
+    suspend fun verifyUser(@Body loginRequest: LoginRequest): Response<VerifyDto>
 
     @GET("api/auth/fast/logout")
     suspend fun logOutUser(): Response<Unit>
